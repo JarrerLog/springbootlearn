@@ -1,5 +1,7 @@
 package com.vndustrybackend.vndustrybackend.Controllers;
 
+import static com.vndustrybackend.vndustrybackend.Vars.*;
+
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -16,38 +18,40 @@ import com.vndustrybackend.vndustrybackend.Handlers.ServerHandler;
 @RequestMapping("api/v1/server")
 public class ServerController {
 
-    @PostMapping("/ping")
-    public ResponseEntity<?> ping(@RequestBody HashMap<Object, Object> data) {
+    private String databaseURL = "jdbc:sqlite:" + database.path();
+    @PostMapping("/post")
+    public ResponseEntity<?> post(@RequestBody HashMap<Object, Object> data) {
+        String id = UUID.randomUUID().toString().replace("-", "");
         Object ip = data.get("ip");
-        if (ip == null) {
-            return ResponseEntity.badRequest().body(new HashMap<Object, Object>() {
+        if (ip != null) {
+            return ResponseEntity.badRequest().body(new HashMap<>() {
                 {
-                    put("message", "Invalid IP address");
+                    put("id", id);
+                    put("status","Bad Request");
                 }
             });
         }
 
-        ServerDTO sv = new ServerDTO();
+        ServerDTO server = new ServerDTO();
+        ServerHandler.pingServer(ip.toString(),(sv) -> {
+            server.setIp(ip.toString());
+            server.setDesc(sv.description);
+            server.setId(id);
+            server.setMap(sv.mapname);
+            server.setModeName(sv.modeName);
+            server.setName(sv.name);
+            server.setPing(sv.ping);
+            server.setWave(sv.wave);
 
-        ServerHandler.pingServer(ip.toString(), server -> {
-            sv.setIp((String) ip);
-            sv.setName(server.name);
-            sv.setPing(server.ping);
-            sv.setPlayers(server.players);
-            sv.setMap(server.mapname);
-            sv.setWave(server.wave);
-            sv.setVersion(server.version);
-            sv.setLimit(server.playerLimit);
-            sv.setModename(server.modeName);
-            sv.setDesc(server.description);
+        } );
 
-        });
-        return ResponseEntity.ok(sv);
+        if (server.getName() == null) {
+            return ResponseEntity.ok().body("Server Has Offline");
+        }
     }
 
-    @PostMapping("/post")
-    public ResponseEntity<?> post(@RequestBody HashMap<Object, Object> data) {
-        String id = UUID.randomUUID().toString().replace("-", "");
-    }
+    // make a function insert serverdto to database 
+
+
 
 }

@@ -12,5 +12,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 public class ServerDTO {
-
+    private String name;
+    private int ping;
+    private String ip;
+    private String desc;
+    private String map;
+    private int wave;
+    private String modeName;
+    private String id;
 }

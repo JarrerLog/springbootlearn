@@ -1,11 +1,11 @@
 package com.vndustrybackend.vndustrybackend;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
 import arc.files.Fi;
 import arc.struct.ObjectMap;
 import mindustry.type.Item;
-
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 
 public class Vars {
     public static final Fi dataDirectory = Fi.get(".community");
@@ -15,6 +15,7 @@ public class Vars {
     public static final Fi data = dataDirectory.child("data");
     public static final Fi schematicSave = data.child("schematics");
     public static final Fi mapSave = data.child("maps");
+    public static final Fi database = dataDirectory.child("database.db");
 
 
     public static final ObjectMap<String, BufferedImage> regions = new ObjectMap<>();
